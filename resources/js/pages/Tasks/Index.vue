@@ -1,11 +1,55 @@
 <script setup lang="ts">
-    import AppLayout from '@/layouts/AppLayout.vue';
-    import { Head } from '@inertiajs/vue3';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Button, buttonVariants } from '@/components/ui/button';
+import AppLayout from '@/layouts/AppLayout.vue';
+import { Head, router, Link } from '@inertiajs/vue3';
+import { type Task } from '@/types';
+import { toast } from 'vue-sonner';
+
+interface Props {
+    tasks: Task[];
+}
+
+defineProps<Props>();
+
+const deleteTask = (id: number) => {
+    if (confirm('Are you sure you want to delete this task?')) {
+        router.delete(route('tasks.destroy', { id }), {
+            onSuccess: () => toast.success('Task deleted successfully'),
+            onError: () => toast.error('Failed to delete task'),
+        });
+    }
+};
+
 </script>
 
 <template>
     <AppLayout>
-        <Head title="Index" />
-            <div>The list will be here.</div>
+
+        <Head title="Tasks List" />
+        <div class="mt-4">
+            <Link :class="buttonVariants({ variant: 'outline' })" href="/tasks/create"> Create Task
+            </Link>
+        </div>
+        <Table class="mt-4">
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Task</TableHead>
+                    <TableHead class="w-[100px]">Status</TableHead>
+                    <TableHead class="w-[100px] text-right">Actions</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                <TableRow v-for="task in tasks" :key="task.id">
+                    <TableCell>{{ task.name }}</TableCell>
+                    <TableCell :class="{ 'text-green-600': task.is_completed, 'text-red-700': !task.is_completed }">
+                        {{ task.is_completed ? 'Completed' : 'In Progress' }}
+                    </TableCell>
+                    <TableCell class="text-right">
+                        <Button variant="destructive" @click="deleteTask(task.id)" class="mr-2">Delete</Button>
+                    </TableCell>
+                </TableRow>
+            </TableBody>
+        </Table>
     </AppLayout>
 </template>

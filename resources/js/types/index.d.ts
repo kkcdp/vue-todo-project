@@ -17,6 +17,14 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface Task {
+    id: number;
+    name: string;
+    is_completed: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export type AppPageProps<T extends Record<string, unknown> = Record<string, unknown>> = T & {
     name: string;
     quote: { message: string; author: string };
