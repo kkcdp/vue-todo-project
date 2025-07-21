@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button, buttonVariants } from '@/components/ui/button';
+import { TablePagination } from '@/components/table-pagination';
+import { DateFormatter } from '@internationalized/date';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, router, Link } from '@inertiajs/vue3';
-import { type Task } from '@/types';
+import { type BreadcrumbItem, type PaginatedResponse, type Task } from '@/types';
 import { toast } from 'vue-sonner';
 
 interface Props {
-    tasks: Task[];
+    tasks: PaginatedResponse<Task>;
 }
 
 defineProps<Props>();
@@ -21,10 +23,19 @@ const deleteTask = (id: number) => {
     }
 };
 
+const breadcrumbs: BreadcrumbItem[] = [
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Tasks', href: '/tasks' },
+];
+
+const df = new DateFormatter('en-US', {
+    dateStyle: 'long',
+});
+
 </script>
 
 <template>
-    <AppLayout>
+    <AppLayout :breadcrumbs="breadcrumbs">
 
         <Head title="Tasks List" />
         <div class="mt-4">
@@ -35,21 +46,25 @@ const deleteTask = (id: number) => {
             <TableHeader>
                 <TableRow>
                     <TableHead>Task</TableHead>
-                    <TableHead class="w-[100px]">Status</TableHead>
+                    <TableHead class="w-[200px]">Status</TableHead>
+                    <TableHead class="w-[200px]">Due Date</TableHead>
                     <TableHead class="w-[100px] text-right">Actions</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                <TableRow v-for="task in tasks" :key="task.id">
+               <TableRow v-for="task in tasks.data" :key="task.id">
                     <TableCell>{{ task.name }}</TableCell>
                     <TableCell :class="{ 'text-green-600': task.is_completed, 'text-red-700': !task.is_completed }">
                         {{ task.is_completed ? 'Completed' : 'In Progress' }}
                     </TableCell>
-                    <TableCell class="text-right">
+                    <TableCell>{{ task.due_date ? df.format(new Date(task.due_date)) : '' }}</TableCell>
+                    <TableCell class="flex gap-x-2 text-right">
+                        <Link :class="buttonVariants({ variant: 'default' })" :href="`/tasks/${task.id}/edit`">Edit </Link>
                         <Button variant="destructive" @click="deleteTask(task.id)" class="mr-2">Delete</Button>
                     </TableCell>
                 </TableRow>
             </TableBody>
         </Table>
+        <Pagination :resource="tasks" />
     </AppLayout>
 </template>
