@@ -50,16 +50,20 @@ export interface PaginatedResponse<T = Task | null> {
     first_page_url: string;
     from: number;
     last_page: number;
-    last_page_url: string;
+    last_page_url: string | url;
+    //url ielikts
     links: {
-        url: string | null;
+        url: any;
+        //bija string un null? un url?
         label: string;
         active: boolean;
     }[];
-    next_page_url: string | null;
+    next_page_url: string | url |null;
+    //url ielikts
     path: string;
     per_page: number;
-    prev_page_url: string | null;
+    prev_page_url: string | url | null;
+    //url ielikts
     to: number;
     total: number;
 }
