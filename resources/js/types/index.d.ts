@@ -18,10 +18,21 @@ export interface NavItem {
 }
 
 export interface Task {
+  id: number;
+  name: string;
+  is_completed: boolean;
+  due_date?: string;
+  mediaFile?: MediaFile;
+  task_categories: TaskCategory[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskCategory {
     id: number;
     name: string;
-    is_completed: boolean;
-    due_date?: string | null;
+    tasks_count: number | null;
+    tasks: Task[] | null;
     created_at: string;
     updated_at: string;
 }
@@ -44,7 +55,7 @@ export interface User {
     updated_at: string;
 }
 
-export interface PaginatedResponse<T = Task | null> {
+export interface PaginatedResponse<T = Task | Taskcategory | null> {
     current_page: number;
     data: T[];
     first_page_url: string;
@@ -67,5 +78,9 @@ export interface PaginatedResponse<T = Task | null> {
     to: number;
     total: number;
 }
+
+
+
+
 
 export type BreadcrumbItemType = BreadcrumbItem;

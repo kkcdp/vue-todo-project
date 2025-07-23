@@ -47,14 +47,15 @@ const df = new DateFormatter('en-US', {
         <div class=""></div>
 
         <Head title="Tasks List" />
-        <div class="mt-4">
-            <Link :class="buttonVariants({ variant: 'outline' })" href="/tasks/create"> Create Task
-            </Link>
+        <div class="mt-4 flex gap-4">
+            <Link :class="buttonVariants({ variant: 'outline' })" href="/tasks/create"> Create Task</Link>
+            <Link :class="buttonVariants({ variant: 'outline' })" href="/task-categories"> Manage Task Categories</Link>
         </div>
         <Table class="mt-4">
             <TableHeader>
                 <TableRow>
                     <TableHead >Task</TableHead>
+                    <TableHead class="w-[200px]">Categories</TableHead>
                     <TableHead class="w-[200px]">Status</TableHead>
                     <TableHead class="w-[200px]">Due Date</TableHead>
                     <TableHead class="w-[100px] text-center">Actions</TableHead>
@@ -63,6 +64,16 @@ const df = new DateFormatter('en-US', {
             <TableBody>
                <TableRow v-for="task in tasks.data" :key="task.id">
                     <TableCell>{{ task.name }}</TableCell>
+                    <TableCell>
+                        <span
+                            v-for="category in task.task_categories"
+                            :key="category.id"
+                            class="mr-2 rounded-full bg-gray-200 px-2 py-1 text-gray-800"
+                            >
+                            {{ category.name }}
+                        </span>
+                    </TableCell>
+
                     <TableCell :class="{ 'text-green-600': task.is_completed, 'text-red-700': !task.is_completed }">
                         {{ task.is_completed ? 'Completed' : 'In Progress' }}
                     </TableCell>
@@ -74,6 +85,9 @@ const df = new DateFormatter('en-US', {
                 </TableRow>
             </TableBody>
         </Table>
+
+        <!-- <Pagination :resource="taskCategories" /> -->
+
         <div class="flex mr-4 justify-end">
             <Pagination :links="tasks.links" />
         </div>

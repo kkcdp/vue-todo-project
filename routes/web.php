@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TaskCategoryController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     })->name('dashboard');
 
     Route::resource('tasks', TaskController::class);
+    Route::resource('task-categories', TaskCategoryController::class);
 
 
 });
